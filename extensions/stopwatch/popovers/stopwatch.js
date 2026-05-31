@@ -20,7 +20,13 @@ function loadState() {
 }
 
 function saveState(s) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  } catch (e) {
+    // Persistence is best-effort: private-mode or quota errors must not
+    // interrupt the start/stop/restart handlers.
+    console.warn("stopwatch: failed to persist state", e);
+  }
 }
 
 let state = loadState();
