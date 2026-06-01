@@ -58,7 +58,9 @@ function buildExtension(name) {
   try {
     // Install with registry access but no lifecycle scripts.
     run("npm", ["ci", "--ignore-scripts"], dir, process.env);
-    // Build offline so the bundle can't fetch code at build time.
+    // Run the build with npm in offline mode so it can't pull additional
+    // packages at build time. This constrains npm's own network use; it is a
+    // speed-bump, not a sandbox (build tooling can still make network calls).
     run("npm", ["run", "build"], dir, { ...process.env, npm_config_offline: "true" });
   } catch (err) {
     fail(name, `build failed: ${err.message}`);
